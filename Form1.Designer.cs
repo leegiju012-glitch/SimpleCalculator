@@ -245,7 +245,7 @@ namespace SimpleCalculator
             btnMultiply.ForeColor = Color.White;
             btnMultiply.Location = new Point(394, 287);
             btnMultiply.Name = "btnMultiply";
-            btnMultiply.Size = new Size(115, 58);
+            btnMultiply.Size = new Size(115, 59);
             btnMultiply.TabIndex = 12;
             btnMultiply.Text = "x";
             btnMultiply.UseVisualStyleBackColor = false;
