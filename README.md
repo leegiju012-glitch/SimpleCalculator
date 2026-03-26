@@ -11,10 +11,10 @@ Simple Calculator Application
 
 
 ## 실행화면(과제1)
--과제1코드의실행스크린샷!
+-과제1코드의실행스크린샷
 
-[과제1 실행화면](img/screenshot-1.png)
-[과제1 실행화면](img/screenshot-2.png)
+![과제1 실행화면](img/screenshot-1.png)
+![과제1 실행화면](img/screenshot-2.png)
 
 -과제내용
 	
