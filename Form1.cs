@@ -4,7 +4,8 @@ namespace SimpleCalculator
     {
         private string operand1 = string.Empty;
         private string operand2 = string.Empty;
-        private bool isAdding;
+        private string op = string.Empty;
+        private bool isOperating;
         private bool startNewNumber = true;
 
         public Form1()
@@ -30,10 +31,10 @@ namespace SimpleCalculator
                 txtResult.Text += digit;
             }
 
-            if (isAdding)
+            if (isOperating)
             {
                 operand2 = txtResult.Text;
-                txtExpress.Text = operand1 + " + " + operand2;
+                txtExpress.Text = operand1 + " " + op + " " + operand2;
             }
             else
             {
@@ -48,22 +49,17 @@ namespace SimpleCalculator
                 return;
             }
 
-            if (button.Text != "+")
-            {
-                txtExpress.Text = "+ example only";
-                return;
-            }
-
             operand1 = txtResult.Text;
             operand2 = string.Empty;
-            isAdding = true;
+            op = button.Text;
+            isOperating = true;
             startNewNumber = true;
-            txtExpress.Text = operand1 + " +";
+            txtExpress.Text = operand1 + " " + op;
         }
 
         private void EqualsButton_Click(object? sender, EventArgs e)
         {
-            if (!isAdding || string.IsNullOrWhiteSpace(operand1))
+            if (!isOperating || string.IsNullOrWhiteSpace(operand1))
             {
                 return;
             }
@@ -72,13 +68,44 @@ namespace SimpleCalculator
 
             int n1 = int.Parse(operand1);
             int n2 = int.Parse(operand2);
+            int result = 0;
 
-            txtExpress.Text = operand1 + " + " + operand2 + " =";
-            txtResult.Text = (n1 + n2).ToString();
+            if (op == "+")
+            {
+                result = n1 + n2;
+            }
+            else if (op == "-")
+            {
+                result = n1 - n2;
+            }
+            else if (op == "x")
+            {
+                result = n1 * n2;
+            }
+            else if (op == "/")
+            {
+                if (n2 == 0)
+                {
+                    txtExpress.Text = "Cannot divide by zero.";
+                    txtResult.Text = "0";
+                    operand1 = string.Empty;
+                    operand2 = string.Empty;
+                    op = string.Empty;
+                    isOperating = false;
+                    startNewNumber = true;
+                    return;
+                }
+
+                result = n1 / n2;
+            }
+
+            txtExpress.Text = operand1 + " " + op + " " + operand2 + " = " + result.ToString();
+            txtResult.Text = result.ToString();
 
             operand1 = string.Empty;
             operand2 = string.Empty;
-            isAdding = false;
+            op = string.Empty;
+            isOperating = false;
             startNewNumber = true;
         }
 
@@ -92,10 +119,10 @@ namespace SimpleCalculator
             txtResult.Text = "0";
             startNewNumber = true;
 
-            if (isAdding)
+            if (isOperating)
             {
                 operand2 = string.Empty;
-                txtExpress.Text = operand1 + " +";
+                txtExpress.Text = operand1 + " " + op;
             }
             else
             {
@@ -120,12 +147,12 @@ namespace SimpleCalculator
                 txtResult.Text = txtResult.Text[..^1];
             }
 
-            if (isAdding)
+            if (isOperating)
             {
                 operand2 = txtResult.Text == "0" && startNewNumber ? string.Empty : txtResult.Text;
                 txtExpress.Text = string.IsNullOrEmpty(operand2)
-                    ? operand1 + " +"
-                    : operand1 + " + " + operand2;
+                    ? operand1 + " " + op
+                    : operand1 + " " + op + " " + operand2;
             }
             else
             {
@@ -145,7 +172,8 @@ namespace SimpleCalculator
         {
             operand1 = string.Empty;
             operand2 = string.Empty;
-            isAdding = false;
+            op = string.Empty;
+            isOperating = false;
             startNewNumber = true;
             txtExpress.Text = string.Empty;
             txtResult.Text = "0";
