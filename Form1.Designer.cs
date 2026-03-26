@@ -33,6 +33,8 @@ namespace SimpleCalculator
             txtResult = new TextBox();
             btnCe = new Button();
             btnClear = new Button();
+            btnOpenBracket = new Button();
+            btnCloseBracket = new Button();
             btnDelete = new Button();
             btnDivide = new Button();
             btn7 = new Button();
@@ -101,11 +103,11 @@ namespace SimpleCalculator
             btnCe.BackColor = Color.FromArgb(165, 165, 165);
             btnCe.FlatAppearance.BorderSize = 0;
             btnCe.FlatStyle = FlatStyle.Flat;
-            btnCe.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnCe.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnCe.ForeColor = Color.Black;
             btnCe.Location = new Point(34, 215);
             btnCe.Name = "btnCe";
-            btnCe.Size = new Size(96, 58);
+            btnCe.Size = new Size(72, 58);
             btnCe.TabIndex = 3;
             btnCe.Text = "CE";
             btnCe.UseVisualStyleBackColor = false;
@@ -116,27 +118,57 @@ namespace SimpleCalculator
             btnClear.BackColor = Color.FromArgb(165, 165, 165);
             btnClear.FlatAppearance.BorderSize = 0;
             btnClear.FlatStyle = FlatStyle.Flat;
-            btnClear.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnClear.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnClear.ForeColor = Color.Black;
-            btnClear.Location = new Point(154, 215);
+            btnClear.Location = new Point(114, 215);
             btnClear.Name = "btnClear";
-            btnClear.Size = new Size(96, 58);
+            btnClear.Size = new Size(72, 58);
             btnClear.TabIndex = 4;
             btnClear.Text = "C";
             btnClear.UseVisualStyleBackColor = false;
             btnClear.Click += ClearButton_Click;
+            // 
+            // btnOpenBracket
+            // 
+            btnOpenBracket.BackColor = Color.FromArgb(165, 165, 165);
+            btnOpenBracket.FlatAppearance.BorderSize = 0;
+            btnOpenBracket.FlatStyle = FlatStyle.Flat;
+            btnOpenBracket.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnOpenBracket.ForeColor = Color.Black;
+            btnOpenBracket.Location = new Point(194, 215);
+            btnOpenBracket.Name = "btnOpenBracket";
+            btnOpenBracket.Size = new Size(72, 58);
+            btnOpenBracket.TabIndex = 5;
+            btnOpenBracket.Text = "(";
+            btnOpenBracket.UseVisualStyleBackColor = false;
+            btnOpenBracket.Click += BracketButton_Click;
+            // 
+            // btnCloseBracket
+            // 
+            btnCloseBracket.BackColor = Color.FromArgb(165, 165, 165);
+            btnCloseBracket.FlatAppearance.BorderSize = 0;
+            btnCloseBracket.FlatStyle = FlatStyle.Flat;
+            btnCloseBracket.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnCloseBracket.ForeColor = Color.Black;
+            btnCloseBracket.Location = new Point(274, 215);
+            btnCloseBracket.Name = "btnCloseBracket";
+            btnCloseBracket.Size = new Size(72, 58);
+            btnCloseBracket.TabIndex = 6;
+            btnCloseBracket.Text = ")";
+            btnCloseBracket.UseVisualStyleBackColor = false;
+            btnCloseBracket.Click += BracketButton_Click;
             // 
             // btnDelete
             // 
             btnDelete.BackColor = Color.FromArgb(165, 165, 165);
             btnDelete.FlatAppearance.BorderSize = 0;
             btnDelete.FlatStyle = FlatStyle.Flat;
-            btnDelete.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnDelete.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnDelete.ForeColor = Color.Black;
-            btnDelete.Location = new Point(274, 215);
+            btnDelete.Location = new Point(354, 215);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(96, 58);
-            btnDelete.TabIndex = 5;
+            btnDelete.Size = new Size(72, 58);
+            btnDelete.TabIndex = 7;
             btnDelete.Text = "del";
             btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += DeleteButton_Click;
@@ -146,12 +178,12 @@ namespace SimpleCalculator
             btnDivide.BackColor = Color.FromArgb(255, 149, 0);
             btnDivide.FlatAppearance.BorderSize = 0;
             btnDivide.FlatStyle = FlatStyle.Flat;
-            btnDivide.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnDivide.Font = new Font("Segoe UI Semibold", 24F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnDivide.ForeColor = Color.White;
-            btnDivide.Location = new Point(394, 215);
+            btnDivide.Location = new Point(434, 215);
             btnDivide.Name = "btnDivide";
-            btnDivide.Size = new Size(115, 58);
-            btnDivide.TabIndex = 6;
+            btnDivide.Size = new Size(75, 58);
+            btnDivide.TabIndex = 8;
             btnDivide.Text = "÷";
             btnDivide.UseVisualStyleBackColor = false;
             btnDivide.Click += OperatorButton_Click;
@@ -166,7 +198,7 @@ namespace SimpleCalculator
             btn7.Location = new Point(34, 287);
             btn7.Name = "btn7";
             btn7.Size = new Size(96, 58);
-            btn7.TabIndex = 7;
+            btn7.TabIndex = 9;
             btn7.Tag = "7";
             btn7.Text = "7";
             btn7.UseVisualStyleBackColor = false;
@@ -182,7 +214,7 @@ namespace SimpleCalculator
             btn8.Location = new Point(154, 287);
             btn8.Name = "btn8";
             btn8.Size = new Size(96, 58);
-            btn8.TabIndex = 8;
+            btn8.TabIndex = 10;
             btn8.Tag = "8";
             btn8.Text = "8";
             btn8.UseVisualStyleBackColor = false;
@@ -198,7 +230,7 @@ namespace SimpleCalculator
             btn9.Location = new Point(274, 287);
             btn9.Name = "btn9";
             btn9.Size = new Size(96, 58);
-            btn9.TabIndex = 9;
+            btn9.TabIndex = 11;
             btn9.Tag = "9";
             btn9.Text = "9";
             btn9.UseVisualStyleBackColor = false;
@@ -209,12 +241,12 @@ namespace SimpleCalculator
             btnMultiply.BackColor = Color.FromArgb(255, 149, 0);
             btnMultiply.FlatAppearance.BorderSize = 0;
             btnMultiply.FlatStyle = FlatStyle.Flat;
-            btnMultiply.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnMultiply.Font = new Font("Segoe UI Semibold", 24F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnMultiply.ForeColor = Color.White;
             btnMultiply.Location = new Point(394, 287);
             btnMultiply.Name = "btnMultiply";
             btnMultiply.Size = new Size(115, 58);
-            btnMultiply.TabIndex = 10;
+            btnMultiply.TabIndex = 12;
             btnMultiply.Text = "x";
             btnMultiply.UseVisualStyleBackColor = false;
             btnMultiply.Click += OperatorButton_Click;
@@ -229,7 +261,7 @@ namespace SimpleCalculator
             btn4.Location = new Point(34, 359);
             btn4.Name = "btn4";
             btn4.Size = new Size(96, 58);
-            btn4.TabIndex = 11;
+            btn4.TabIndex = 13;
             btn4.Tag = "4";
             btn4.Text = "4";
             btn4.UseVisualStyleBackColor = false;
@@ -245,7 +277,7 @@ namespace SimpleCalculator
             btn5.Location = new Point(154, 359);
             btn5.Name = "btn5";
             btn5.Size = new Size(96, 58);
-            btn5.TabIndex = 12;
+            btn5.TabIndex = 14;
             btn5.Tag = "5";
             btn5.Text = "5";
             btn5.UseVisualStyleBackColor = false;
@@ -261,7 +293,7 @@ namespace SimpleCalculator
             btn6.Location = new Point(274, 359);
             btn6.Name = "btn6";
             btn6.Size = new Size(96, 58);
-            btn6.TabIndex = 13;
+            btn6.TabIndex = 15;
             btn6.Tag = "6";
             btn6.Text = "6";
             btn6.UseVisualStyleBackColor = false;
@@ -272,12 +304,12 @@ namespace SimpleCalculator
             btnSubtract.BackColor = Color.FromArgb(255, 149, 0);
             btnSubtract.FlatAppearance.BorderSize = 0;
             btnSubtract.FlatStyle = FlatStyle.Flat;
-            btnSubtract.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnSubtract.Font = new Font("Segoe UI Semibold", 24F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnSubtract.ForeColor = Color.White;
             btnSubtract.Location = new Point(394, 359);
             btnSubtract.Name = "btnSubtract";
             btnSubtract.Size = new Size(115, 58);
-            btnSubtract.TabIndex = 14;
+            btnSubtract.TabIndex = 16;
             btnSubtract.Text = "-";
             btnSubtract.UseVisualStyleBackColor = false;
             btnSubtract.Click += OperatorButton_Click;
@@ -292,7 +324,7 @@ namespace SimpleCalculator
             btn1.Location = new Point(34, 431);
             btn1.Name = "btn1";
             btn1.Size = new Size(96, 58);
-            btn1.TabIndex = 15;
+            btn1.TabIndex = 17;
             btn1.Tag = "1";
             btn1.Text = "1";
             btn1.UseVisualStyleBackColor = false;
@@ -308,7 +340,7 @@ namespace SimpleCalculator
             btn2.Location = new Point(154, 431);
             btn2.Name = "btn2";
             btn2.Size = new Size(96, 58);
-            btn2.TabIndex = 16;
+            btn2.TabIndex = 18;
             btn2.Tag = "2";
             btn2.Text = "2";
             btn2.UseVisualStyleBackColor = false;
@@ -324,7 +356,7 @@ namespace SimpleCalculator
             btn3.Location = new Point(274, 431);
             btn3.Name = "btn3";
             btn3.Size = new Size(96, 58);
-            btn3.TabIndex = 17;
+            btn3.TabIndex = 19;
             btn3.Tag = "3";
             btn3.Text = "3";
             btn3.UseVisualStyleBackColor = false;
@@ -335,12 +367,12 @@ namespace SimpleCalculator
             btnAdd.BackColor = Color.FromArgb(255, 149, 0);
             btnAdd.FlatAppearance.BorderSize = 0;
             btnAdd.FlatStyle = FlatStyle.Flat;
-            btnAdd.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnAdd.Font = new Font("Segoe UI Semibold", 24F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnAdd.ForeColor = Color.White;
             btnAdd.Location = new Point(394, 431);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(115, 58);
-            btnAdd.TabIndex = 18;
+            btnAdd.TabIndex = 20;
             btnAdd.Text = "+";
             btnAdd.UseVisualStyleBackColor = false;
             btnAdd.Click += OperatorButton_Click;
@@ -355,7 +387,7 @@ namespace SimpleCalculator
             btnSign.Location = new Point(34, 503);
             btnSign.Name = "btnSign";
             btnSign.Size = new Size(96, 58);
-            btnSign.TabIndex = 19;
+            btnSign.TabIndex = 21;
             btnSign.Text = "+/-";
             btnSign.UseVisualStyleBackColor = false;
             btnSign.Click += SignButton_Click;
@@ -370,7 +402,7 @@ namespace SimpleCalculator
             btn0.Location = new Point(154, 503);
             btn0.Name = "btn0";
             btn0.Size = new Size(96, 58);
-            btn0.TabIndex = 20;
+            btn0.TabIndex = 22;
             btn0.Tag = "0";
             btn0.Text = "0";
             btn0.UseVisualStyleBackColor = false;
@@ -386,7 +418,7 @@ namespace SimpleCalculator
             btnDecimal.Location = new Point(274, 503);
             btnDecimal.Name = "btnDecimal";
             btnDecimal.Size = new Size(96, 58);
-            btnDecimal.TabIndex = 21;
+            btnDecimal.TabIndex = 23;
             btnDecimal.Text = ".";
             btnDecimal.UseVisualStyleBackColor = false;
             btnDecimal.Click += DecimalButton_Click;
@@ -396,12 +428,12 @@ namespace SimpleCalculator
             btnEqual.BackColor = Color.FromArgb(255, 149, 0);
             btnEqual.FlatAppearance.BorderSize = 0;
             btnEqual.FlatStyle = FlatStyle.Flat;
-            btnEqual.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            btnEqual.Font = new Font("Segoe UI Semibold", 24F, FontStyle.Bold, GraphicsUnit.Point, 129);
             btnEqual.ForeColor = Color.White;
             btnEqual.Location = new Point(394, 503);
             btnEqual.Name = "btnEqual";
             btnEqual.Size = new Size(115, 58);
-            btnEqual.TabIndex = 22;
+            btnEqual.TabIndex = 24;
             btnEqual.Text = "=";
             btnEqual.UseVisualStyleBackColor = false;
             btnEqual.Click += EqualsButton_Click;
@@ -413,7 +445,7 @@ namespace SimpleCalculator
             lblMessage.Location = new Point(34, 572);
             lblMessage.Name = "lblMessage";
             lblMessage.Size = new Size(475, 30);
-            lblMessage.TabIndex = 23;
+            lblMessage.TabIndex = 25;
             lblMessage.Text = "Ready";
             // 
             // btnHistory
@@ -426,7 +458,7 @@ namespace SimpleCalculator
             btnHistory.Location = new Point(413, 34);
             btnHistory.Name = "btnHistory";
             btnHistory.Size = new Size(96, 38);
-            btnHistory.TabIndex = 24;
+            btnHistory.TabIndex = 26;
             btnHistory.Text = "History";
             btnHistory.UseVisualStyleBackColor = false;
             btnHistory.Click += btnHistory_Click;
@@ -439,7 +471,7 @@ namespace SimpleCalculator
             pnlHistory.Location = new Point(534, 24);
             pnlHistory.Name = "pnlHistory";
             pnlHistory.Size = new Size(180, 578);
-            pnlHistory.TabIndex = 25;
+            pnlHistory.TabIndex = 27;
             pnlHistory.Visible = false;
             // 
             // lstHistory
@@ -492,6 +524,8 @@ namespace SimpleCalculator
             Controls.Add(btn7);
             Controls.Add(btnDivide);
             Controls.Add(btnDelete);
+            Controls.Add(btnCloseBracket);
+            Controls.Add(btnOpenBracket);
             Controls.Add(btnClear);
             Controls.Add(btnCe);
             Controls.Add(txtResult);
@@ -515,6 +549,8 @@ namespace SimpleCalculator
         private TextBox txtResult;
         private Button btnCe;
         private Button btnClear;
+        private Button btnOpenBracket;
+        private Button btnCloseBracket;
         private Button btnDelete;
         private Button btnDivide;
         private Button btn7;

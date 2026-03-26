@@ -1,14 +1,14 @@
+using System.Data;
+using System.Globalization;
+using System.Text.RegularExpressions;
+
 namespace SimpleCalculator
 {
     public partial class Form1 : Form
     {
-        private string operand1 = string.Empty;
-        private string operand2 = string.Empty;
-        private string op = string.Empty;
-        private bool isOperating;
-        private bool startNewNumber = true;
+        private string expressionInput = string.Empty;
+        private string currentEntry = "0";
         private bool hasCalculated;
-        private int completedCalculations;
         private bool isHistoryVisible;
 
         public Form1()
@@ -24,24 +24,34 @@ namespace SimpleCalculator
                 return;
             }
 
-            if (hasCalculated && !isOperating)
+            if (hasCalculated)
             {
                 ResetCalculator();
             }
 
-            if (startNewNumber || txtResult.Text == "0")
+            currentEntry = currentEntry == "0" ? digit : currentEntry + digit;
+            UpdateDisplays();
+            UpdateMessage("숫자를 입력하고 있습니다.");
+        }
+
+        private void DecimalButton_Click(object? sender, EventArgs e)
+        {
+            if (hasCalculated)
             {
-                txtResult.Text = digit;
-                startNewNumber = false;
-            }
-            else
-            {
-                txtResult.Text += digit;
+                ResetCalculator();
             }
 
-            UpdateCurrentOperand();
-            UpdateExpressionText();
-            UpdateMessage("숫자를 입력하고 있습니다.");
+            if (string.IsNullOrEmpty(currentEntry))
+            {
+                currentEntry = "0.";
+            }
+            else if (!currentEntry.Contains('.'))
+            {
+                currentEntry += ".";
+            }
+
+            UpdateDisplays();
+            UpdateMessage("소수점을 입력했습니다.");
         }
 
         private void OperatorButton_Click(object? sender, EventArgs e)
@@ -51,27 +61,104 @@ namespace SimpleCalculator
                 return;
             }
 
-            if (string.IsNullOrEmpty(op) && !isOperating)
+            if (hasCalculated)
             {
-                operand1 = txtResult.Text;
-            }
-            else if (!startNewNumber && !string.IsNullOrWhiteSpace(operand1))
-            {
-                EvaluateCurrentExpression(false);
+                expressionInput = currentEntry;
+                hasCalculated = false;
             }
 
-            op = button.Text;
-            isOperating = true;
-            startNewNumber = true;
-            hasCalculated = false;
-            operand2 = string.Empty;
-            UpdateExpressionText();
+            CommitCurrentEntryIfNeeded();
+
+            if (string.IsNullOrEmpty(expressionInput))
+            {
+                expressionInput = "0";
+            }
+
+            if (EndsWithOperator(expressionInput))
+            {
+                expressionInput = expressionInput[..^3];
+            }
+
+            expressionInput += $" {button.Text} ";
+            currentEntry = string.Empty;
+            UpdateDisplays();
             UpdateMessage("연산자를 선택했습니다.");
+        }
+
+        private void BracketButton_Click(object? sender, EventArgs e)
+        {
+            if (sender is not Button button)
+            {
+                return;
+            }
+
+            if (hasCalculated)
+            {
+                ResetCalculator();
+            }
+
+            if (button.Text == "(")
+            {
+                if (!string.IsNullOrEmpty(currentEntry) && currentEntry != "0")
+                {
+                    expressionInput += currentEntry + " x ";
+                    currentEntry = string.Empty;
+                }
+                else if (expressionInput.EndsWith(")"))
+                {
+                    expressionInput += " x ";
+                }
+
+                expressionInput += "(";
+                UpdateDisplays();
+                UpdateMessage("여는 괄호를 추가했습니다.");
+                return;
+            }
+
+            CommitCurrentEntryIfNeeded();
+
+            if (CanCloseBracket())
+            {
+                expressionInput += ")";
+                UpdateDisplays();
+                UpdateMessage("닫는 괄호를 추가했습니다.");
+            }
         }
 
         private void EqualsButton_Click(object? sender, EventArgs e)
         {
-            EvaluateCurrentExpression(true);
+            CommitCurrentEntryIfNeeded();
+
+            if (string.IsNullOrWhiteSpace(expressionInput))
+            {
+                return;
+            }
+
+            try
+            {
+                string displayExpression = expressionInput;
+                string calculationExpression = ToCalculationExpression(expressionInput);
+                decimal result = Convert.ToDecimal(new DataTable().Compute(calculationExpression, string.Empty), CultureInfo.InvariantCulture);
+                string resultText = FormatNumber(result);
+
+                txtExpress.Text = displayExpression + " = " + resultText;
+                txtResult.Text = resultText;
+                lstHistory.Items.Insert(0, txtExpress.Text);
+                currentEntry = resultText;
+                expressionInput = string.Empty;
+                hasCalculated = true;
+                UpdateMessage(CreateFunMessage(displayExpression, result));
+            }
+            catch (DivideByZeroException)
+            {
+                ResetCalculator();
+                UpdateMessage("그건 계산기도 곤란합니다");
+            }
+            catch
+            {
+                ResetCalculator();
+                UpdateMessage("식을 다시 확인해보세요.");
+            }
         }
 
         private void ClearButton_Click(object? sender, EventArgs e)
@@ -89,178 +176,122 @@ namespace SimpleCalculator
                 return;
             }
 
-            txtResult.Text = "0";
-            startNewNumber = true;
-
-            if (isOperating)
-            {
-                operand2 = string.Empty;
-            }
-            else
-            {
-                operand1 = string.Empty;
-            }
-
-            UpdateExpressionText();
+            currentEntry = "0";
+            UpdateDisplays();
             UpdateMessage("마지막 피연산자를 통째로 지웠습니다.");
         }
 
         private void DeleteButton_Click(object? sender, EventArgs e)
         {
-            if (hasCalculated || startNewNumber)
+            if (hasCalculated)
             {
                 return;
             }
 
-            if (txtResult.Text.Length > 1)
+            if (string.IsNullOrEmpty(currentEntry) || currentEntry == "0")
             {
-                txtResult.Text = txtResult.Text[..^1];
-            }
-            else
-            {
-                txtResult.Text = "0";
-                startNewNumber = true;
+                return;
             }
 
-            UpdateCurrentOperand();
-            UpdateExpressionText();
+            currentEntry = currentEntry.Length > 1 ? currentEntry[..^1] : "0";
+            if (currentEntry == "-" || currentEntry == string.Empty)
+            {
+                currentEntry = "0";
+            }
+
+            UpdateDisplays();
             UpdateMessage("마지막 숫자 한 자리를 지웠습니다.");
-        }
-
-        private void DecimalButton_Click(object? sender, EventArgs e)
-        {
-            if (hasCalculated && !isOperating)
-            {
-                ResetCalculator();
-            }
-
-            if (startNewNumber)
-            {
-                txtResult.Text = "0.";
-                startNewNumber = false;
-            }
-            else if (!txtResult.Text.Contains('.'))
-            {
-                txtResult.Text += ".";
-            }
-
-            UpdateCurrentOperand();
-            UpdateExpressionText();
-            UpdateMessage("소수점을 입력했습니다.");
         }
 
         private void SignButton_Click(object? sender, EventArgs e)
         {
-            if (txtResult.Text == "0")
+            if (hasCalculated)
+            {
+                hasCalculated = false;
+            }
+
+            if (string.IsNullOrEmpty(currentEntry))
+            {
+                currentEntry = "-";
+            }
+            else if (currentEntry == "0")
             {
                 return;
             }
+            else
+            {
+                currentEntry = currentEntry.StartsWith("-")
+                    ? currentEntry[1..]
+                    : "-" + currentEntry;
+            }
 
-            txtResult.Text = txtResult.Text.StartsWith("-")
-                ? txtResult.Text[1..]
-                : "-" + txtResult.Text;
-
-            startNewNumber = false;
-            UpdateCurrentOperand();
-            UpdateExpressionText();
+            UpdateDisplays();
             UpdateMessage("부호를 전환했습니다.");
         }
 
-        private void EvaluateCurrentExpression(bool finalResult)
+        private void btnHistory_Click(object? sender, EventArgs e)
         {
-            if (!isOperating || string.IsNullOrWhiteSpace(operand1) || string.IsNullOrWhiteSpace(op))
+            isHistoryVisible = !isHistoryVisible;
+            pnlHistory.Visible = isHistoryVisible;
+            btnHistory.Text = isHistoryVisible ? "Hide" : "History";
+        }
+
+        private void CommitCurrentEntryIfNeeded()
+        {
+            if (string.IsNullOrEmpty(currentEntry))
             {
                 return;
             }
 
-            if (startNewNumber && string.IsNullOrEmpty(operand2))
+            if (currentEntry == "-")
+            {
+                currentEntry = "-0";
+            }
+
+            if (expressionInput.EndsWith(")"))
+            {
+                expressionInput += " x ";
+            }
+
+            expressionInput += currentEntry;
+            currentEntry = string.Empty;
+        }
+
+        private bool CanCloseBracket()
+        {
+            return expressionInput.Count(ch => ch == '(') > expressionInput.Count(ch => ch == ')')
+                && !EndsWithOperator(expressionInput)
+                && !expressionInput.EndsWith("(");
+        }
+
+        private static bool EndsWithOperator(string text)
+        {
+            return text.EndsWith(" + ")
+                || text.EndsWith(" - ")
+                || text.EndsWith(" x ")
+                || text.EndsWith(" ÷ ");
+        }
+
+        private static string ToCalculationExpression(string expression)
+        {
+            string converted = expression
+                .Replace("x", "*")
+                .Replace("÷", "/");
+
+            converted = Regex.Replace(converted, @"(\d|\))\s*\(", "$1*(");
+            converted = Regex.Replace(converted, @"\)\s*(\d)", ")*$1");
+            return converted;
+        }
+
+        private void UpdateDisplays()
+        {
+            if (hasCalculated)
             {
                 return;
             }
 
-            operand2 = txtResult.Text;
-
-            decimal n1 = decimal.Parse(operand1);
-            decimal n2 = decimal.Parse(operand2);
-            decimal result;
-
-            if (op == "+")
-            {
-                result = n1 + n2;
-            }
-            else if (op == "-")
-            {
-                result = n1 - n2;
-            }
-            else if (op == "x")
-            {
-                result = n1 * n2;
-            }
-            else
-            {
-                if (n2 == 0)
-                {
-                    ResetCalculator();
-                    UpdateMessage("그건 계산기도 곤란합니다");
-                    return;
-                }
-
-                result = n1 / n2;
-            }
-
-            string expression = operand1 + " " + op + " " + operand2 + " = " + FormatNumber(result);
-
-            txtExpress.Text = expression;
-            txtResult.Text = FormatNumber(result);
-
-            if (finalResult)
-            {
-                lstHistory.Items.Insert(0, expression);
-                completedCalculations++;
-                UpdateMessage(CreateFunMessage(n1, n2, result, op));
-                hasCalculated = true;
-                isOperating = false;
-                op = string.Empty;
-                operand1 = txtResult.Text;
-                operand2 = string.Empty;
-                startNewNumber = true;
-            }
-            else
-            {
-                operand1 = FormatNumber(result);
-                operand2 = string.Empty;
-                txtResult.Text = operand1;
-                startNewNumber = true;
-                hasCalculated = false;
-            }
-        }
-
-        private void UpdateCurrentOperand()
-        {
-            if (isOperating)
-            {
-                operand2 = txtResult.Text;
-            }
-            else
-            {
-                operand1 = txtResult.Text;
-            }
-        }
-
-        private void UpdateExpressionText()
-        {
-            if (isOperating)
-            {
-                txtExpress.Text = string.IsNullOrEmpty(operand2)
-                    ? operand1 + " " + op
-                    : operand1 + " " + op + " " + operand2;
-            }
-            else
-            {
-                txtExpress.Text = startNewNumber && txtResult.Text == "0"
-                    ? string.Empty
-                    : txtResult.Text;
-            }
+            txtExpress.Text = expressionInput + currentEntry;
+            txtResult.Text = string.IsNullOrEmpty(currentEntry) ? "0" : currentEntry;
         }
 
         private void UpdateMessage(string message)
@@ -270,12 +301,19 @@ namespace SimpleCalculator
 
         private static string FormatNumber(decimal value)
         {
-            return value.ToString("0.###############");
+            return value.ToString("0.###############", CultureInfo.InvariantCulture);
         }
 
-        private string CreateFunMessage(decimal n1, decimal n2, decimal result, string currentOperator)
+        private string CreateFunMessage(string displayExpression, decimal result)
         {
-            if (currentOperator == "÷" && n2 != 0 && result == decimal.Truncate(result))
+            decimal[] numbers = Regex.Matches(displayExpression, @"-?\d+(\.\d+)?")
+                .Select(match => decimal.Parse(match.Value, CultureInfo.InvariantCulture))
+                .ToArray();
+
+            decimal n1 = numbers.Length > 0 ? numbers[0] : 0;
+            decimal n2 = numbers.Length > 1 ? numbers[1] : 0;
+
+            if (displayExpression.Contains('÷') && n2 != 0 && result == decimal.Truncate(result))
             {
                 return "공평하게 잘 나눠졌습니다";
             }
@@ -285,17 +323,17 @@ namespace SimpleCalculator
                 return "100점짜리 계산입니다";
             }
 
-            if (Math.Abs(n1) < 10 && Math.Abs(n2) < 10)
+            if (numbers.Length >= 2 && Math.Abs(n1) < 10 && Math.Abs(n2) < 10)
             {
                 return "이정돈 암산 하시죠";
             }
 
-            if (Math.Abs(n1) < 10 && Math.Abs(n2) < 10 && result < 20)
+            if (numbers.Length >= 2 && Math.Abs(n1) < 10 && Math.Abs(n2) < 10 && result < 20)
             {
                 return "너무 쉬운 거 아닌가요";
             }
 
-            if (currentOperator == "x" && Math.Abs(result) >= 1000)
+            if (displayExpression.Contains('x') && Math.Abs(result) >= 1000)
             {
                 return "숫자가 확 커졌네요";
             }
@@ -305,7 +343,7 @@ namespace SimpleCalculator
                 return "깔끔한 결과네요";
             }
 
-            if (currentOperator == "x")
+            if (displayExpression.Contains('x'))
             {
                 return "곱셈 감각이 좋으신데요";
             }
@@ -315,22 +353,12 @@ namespace SimpleCalculator
 
         private void ResetCalculator()
         {
-            operand1 = string.Empty;
-            operand2 = string.Empty;
-            op = string.Empty;
-            isOperating = false;
-            startNewNumber = true;
+            expressionInput = string.Empty;
+            currentEntry = "0";
             hasCalculated = false;
             txtExpress.Text = string.Empty;
             txtResult.Text = "0";
             lblMessage.Text = "계산을 시작해보세요.";
-        }
-
-        private void btnHistory_Click(object? sender, EventArgs e)
-        {
-            isHistoryVisible = !isHistoryVisible;
-            pnlHistory.Visible = isHistoryVisible;
-            btnHistory.Text = isHistoryVisible ? "Hide" : "History";
         }
     }
 }
