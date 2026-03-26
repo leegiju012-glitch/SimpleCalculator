@@ -70,10 +70,10 @@ namespace SimpleCalculator
             txtExpress.BorderStyle = BorderStyle.None;
             txtExpress.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 129);
             txtExpress.ForeColor = Color.Gainsboro;
-            txtExpress.Location = new Point(61, 122);
+            txtExpress.Location = new Point(56, 122);
             txtExpress.Name = "txtExpress";
             txtExpress.ReadOnly = true;
-            txtExpress.Size = new Size(445, 36);
+            txtExpress.Size = new Size(450, 36);
             txtExpress.TabIndex = 1;
             txtExpress.TextAlign = HorizontalAlignment.Right;
             // 
